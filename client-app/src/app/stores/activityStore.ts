@@ -2,6 +2,7 @@ import { IActivity } from './../models/activity';
 import { observable, action, computed } from 'mobx';
 import { createContext } from 'react';
 import agent from '../api/agent';
+import { act } from 'react-dom/test-utils';
 
 class ActivityStore {
   @observable activityRegistry = new Map();
@@ -45,15 +46,42 @@ class ActivityStore {
     }
   };
 
+  @action editActivity = async (activity: IActivity) => {
+    this.submitting = true;
+    try {
+      await agent.Activities.update(activity);
+      this.activityRegistry.set(activity.id, activity);
+      this.selectedActivity = activity;
+      this.editMode = false;
+      this.submitting = false;
+    } catch (error) {
+      this.submitting = false;
+      console.log(error);
+    }
+  }
+
   @action openCreateForm = () => {
     this.editMode = true;
     this.selectedActivity = undefined;
   };
 
+  @action openEditForm = (id: string) => {
+    this.selectedActivity = this.activityRegistry.get(id);
+    this.editMode = true;
+  }
+
+  @action cancelFormOpen = () => {
+    this.editMode = false;
+  }
+
   @action selectActivity = (id: string) => {
     this.selectedActivity = this.activityRegistry.get(id);
     this.editMode = false;
   };
+
+  @action cancelSelectedActivity = () => {
+    this.selectedActivity = undefined;
+  }
 }
 
 export default createContext(new ActivityStore());
