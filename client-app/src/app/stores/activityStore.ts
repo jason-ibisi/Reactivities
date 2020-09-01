@@ -8,7 +8,7 @@ configure({ enforceActions: 'always' });
 class ActivityStore {
   @observable activityRegistry = new Map();
   @observable activities: IActivity[] = [];
-  @observable activity: IActivity | null | undefined;
+  @observable activity: IActivity | undefined;
   @observable loadingInitial = false;
   @observable editMode = false;
   @observable submitting = false;
