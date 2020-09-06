@@ -2,6 +2,7 @@ import { IActivity } from './../models/activity';
 import { observable, action, computed, configure, runInAction } from 'mobx';
 import { createContext, SyntheticEvent } from 'react';
 import agent from '../api/agent';
+import { history } from '../..';
 
 configure({ enforceActions: 'always' });
 
@@ -59,15 +60,21 @@ class ActivityStore {
 
     if (activity) {
       this.activity = activity;
+      activity.time = activity.date;
+      return activity;
     } else {
       this.loadingInitial = true;
       try {
         activity = await agent.Activities.details(id);
         runInAction('getting activity', () => {
           activity.date = new Date(activity.date);
+          activity.time = activity.date;
           this.activity = activity;
+          // prevent a new call to api after retrieving the activity once
+          this.activityRegistry.set(activity.id, activity);
           this.loadingInitial = false;
         });
+        return activity;
       } catch (error) {
         runInAction('get activity error', () => {
           this.loadingInitial = false;
@@ -89,6 +96,7 @@ class ActivityStore {
         this.activityRegistry.set(activity.id, activity);
         this.submitting = false;
       });
+      history.push(`/activities/${activity.id}`);
     } catch (error) {
       runInAction('create an activity error', () => {
         this.submitting = false;
@@ -106,6 +114,7 @@ class ActivityStore {
         this.activity = activity;
         this.submitting = false;
       });
+      history.push(`/activities/${activity.id}`);
     } catch (error) {
       runInAction('edit an activity error', () => {
         this.submitting = false;
