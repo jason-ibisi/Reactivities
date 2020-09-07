@@ -3,6 +3,7 @@ import { observable, action, computed, configure, runInAction } from 'mobx';
 import { createContext, SyntheticEvent } from 'react';
 import agent from '../api/agent';
 import { history } from '../..';
+import { toast } from 'react-toastify';
 
 configure({ enforceActions: 'always' });
 
@@ -101,6 +102,7 @@ class ActivityStore {
       runInAction('create an activity error', () => {
         this.submitting = false;
       });
+      toast.error('Problem submitting data');
       console.log(error);
     }
   };
@@ -119,6 +121,7 @@ class ActivityStore {
       runInAction('edit an activity error', () => {
         this.submitting = false;
       });
+      toast.error('Problem submitting data');
       console.log(error);
     }
   };
