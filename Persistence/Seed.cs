@@ -19,7 +19,7 @@ namespace Persistence
               {
                 DisplayName = "Jones",
                 UserName = "jones",
-                Email = "jones @senduvu.com"
+                Email = "jones@senduvu.com"
               },
               new AppUser
               {
