@@ -1,3 +1,4 @@
+import { history } from './../../index';
 import { RootStore } from './rootStore';
 import { IUserFormValues } from './../models/user';
 import { observable, computed, action, runInAction } from 'mobx';
@@ -23,8 +24,9 @@ export default class UserStore {
         this.user = user;
       });
       console.log(user);
+      history.push('/activities');
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   };
 }
